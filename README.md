@@ -17,24 +17,33 @@ In Python, the cmd module provides a framework for building command-line interpr
 #	Usage of the cmd module
 
 To use the cmd module, you need to import it in your Python script:
--> import cmd
 
-You can then create a subclass of the cmd.Cmd class and define your own commands by overriding the appropriate methods. Here's a simple example:
 
--> class MyCmd(cmd.Cmd):
-	prompt = '(AiBnB) ' # display prompt to user
+ import cmd
+
+-> You can then create a subclass of the cmd.Cmd class and define your own commands by overriding the appropriate methods. Here's a simple example:
+
+
+ class MyCmd(cmd.Cmd):
+
+	prompt = '(AirBnB) ' # display prompt to user
 
 	do_greet(self, line):
 		""" welcomes the user
 		Args:
 			line : The name of the user
 		"""
-		print("Welcome {}".format(line))
+		print("Welcome, {}".format(line))
 	do_EOF(self):
 		""" Exit the command interpreter"""
 		return True
 
--> if __name__ == '__main__':
-    MyCmd().cmdloop()
+ if __name__ == '__main__':
+	MyCmd().cmdloop()
+-> in the above example we created a subclasss of of cmd.Cmd called MyCmd, we define two command called, "greet" and "EOF". The 'do' prefix is neccessary to define the command method.
 
+-> To start the interpreter will need to run it in a loop - the cmdloop().
 
+-> when the script run, you will see the command prompt "(AirBnB) ". you can the enter the command like "greet Olalekan and Idris" to the the user with "Welcome, Olalekan and Idris. also, command like "EOF" or CTRL + D to exit the interpreter sucessfully.
+
+-> The cmd module provides other methods and attributes that you can override to customize the behavior of your command-line interpreter
