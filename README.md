@@ -46,6 +46,6 @@ To use the cmd module, you need to import it in your Python script:
 
 -> To start the interpreter will need to run it in a loop - the cmdloop().
 
--> When the script runs, you will see the command prompt "(AirBnB) ". you can enter a command like "greet Olalekan and Idris" to the user with "Welcome, Olalekan and Idris. Also, a command like "EOF" or CTRL + D to exit the interpreter successfully.
+-> When the script runs, you will see the command prompt "(AirBnB) ". you can enter a command like "greet Olalekan and Idris" to the command line to greet the user with "Welcome, Olalekan and Idris. Also, a command like "EOF" or CTRL + D to exit the interpreter successfully.
 
 -> The cmd module provides other methods and attributes that you can override to customize the behavior of your command-line interpreter
