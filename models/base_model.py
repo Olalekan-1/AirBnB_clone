@@ -12,6 +12,8 @@ class BaseModel:
     """The super class from which other classes inherit
     """
     def __init__(self):
+        """ Instance of BaseModel created"""
+
         self.id = str(uuid.uuid4())
         self.created_at = datetime.now()
         self.updated_at = self.created_at
