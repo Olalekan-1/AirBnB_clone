@@ -11,12 +11,23 @@ from datetime import datetime
 class BaseModel:
     """The super class from which other classes inherit
     """
-    def __init__(self):
-        """ Instance of BaseModel created"""
 
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = self.created_at
+    def __init__(self, *args, **kwargs):
+        attr = [
+                "id", "created_at", "updated_at"
+                ]
+        if len(kwargs.keys()) != 0:
+            created_at = datetime.fromisoformat(kwargs["created_at"])
+            updated_at = datetime.fromisoformat(kwargs["updated_at"])
+            kwargs["updated_at"] = updated_at
+            kwargs["created_at"] = created_at
+
+            for key in attr:
+                self.__setattr__(key, kwargs[key])
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
 
     def to_dict(self):
         """Return a dictionary of instance attributes
