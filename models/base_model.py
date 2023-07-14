@@ -6,6 +6,7 @@ inherit from"""
 
 import uuid
 from datetime import datetime
+from models import storage
 
 
 class BaseModel:
@@ -29,6 +30,8 @@ class BaseModel:
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
 
+            storage.new(self)
+
     def to_dict(self):
         """Return a dictionary of instance attributes
 
@@ -46,6 +49,7 @@ class BaseModel:
         """Set updated_at attribute to current datetime
         """
         self.updated_at = datetime.now()
+        storage.save()
 
     def __str__(self):
         """Return String representation of object
