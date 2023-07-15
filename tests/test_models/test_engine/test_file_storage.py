@@ -32,10 +32,8 @@ class TestFileStorage(TestCase):
         """
 
         if os.path.exists(cls.file_path):
-            print("removing test file")
             os.remove(cls.file_path)
         if cls.backed_up:
-            print("restoring storage file")
             os.rename(cls.backup_file_path, cls.file_path)
 
     def test_file_storage_attrubutes(self):
