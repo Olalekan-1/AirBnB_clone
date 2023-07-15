@@ -1,8 +1,9 @@
 #!/usr/bin/python3
-"""Test Mkdule for FileStorage
+"""Test Module for FileStorage
 """
 
 import os
+import uuid
 from unittest import TestCase
 from models.base_model import BaseModel
 from models.engine.file_storage import FileStorage
@@ -13,10 +14,29 @@ class TestFileStorage(TestCase):
     """
     @classmethod
     def setUpClass(cls):
-        """Setup Test Class
+        """Setup testing resources
         """
-        storage = "_FileStorage__file_path"
-        cls.storage = FileStorage.__dict__[storage]
+        file_path_key = "_FileStorage__file_path"
+        cls.backup_file_path = "file_{}".format(
+                str(uuid.uuid4()).replace('-', ""))
+        cls.backed_up = False
+
+        cls.file_path = FileStorage.__dict__[file_path_key]
+        if os.path.exists(cls.file_path):
+            os.rename(cls.file_path, cls.backup_file_path)
+            cls.backed_up = True
+
+    @classmethod
+    def tearDownClass(cls):
+        """ Release all used resources
+        """
+
+        if os.path.exists(cls.file_path):
+            print("removing test file")
+            os.remove(cls.file_path)
+        if cls.backed_up:
+            print("restoring storage file")
+            os.rename(cls.backup_file_path, cls.file_path)
 
     def test_file_storage_attrubutes(self):
         """ Test attributes of the FileStorage
@@ -103,10 +123,3 @@ class TestFileStorage(TestCase):
             storage_2.save(model)
         with self.assertRaises(TypeError):
             storage_1.reload(5)
-
-    @classmethod
-    def tearDownClass(cls):
-        """ Release all resources used
-        """
-        if os.path.exists(cls.storage):
-            os.remove(cls.storage)
