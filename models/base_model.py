@@ -14,16 +14,16 @@ class BaseModel:
     """
 
     def __init__(self, *args, **kwargs):
-        attr = [
-                "id", "created_at", "updated_at"
-                ]
+
+        ignore = ["__class__"]  # attributes to ignore
+
         if len(kwargs.keys()) != 0:
             created_at = datetime.fromisoformat(kwargs["created_at"])
             updated_at = datetime.fromisoformat(kwargs["updated_at"])
             kwargs["updated_at"] = updated_at
             kwargs["created_at"] = created_at
 
-            for key in attr:
+            for key in [itm for itm in kwargs.keys() if itm not in ignore]:
                 self.__setattr__(key, kwargs[key])
         else:
             self.id = str(uuid.uuid4())
