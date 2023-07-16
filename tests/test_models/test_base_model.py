@@ -72,6 +72,13 @@ class Testbase(unittest.TestCase):
                                   self.base2.__dict__)
         self.assertEqual(str(self.base2), b)
 
+    def test_instance_from_dict(self):
+        """ test an instance from dictionary"""
+        b = self.base2.to_dict()
+        base = BaseModel(**b)
+        self.assertTrue(self.base2, base)
+        self.assertFalse(self.base2 is base)
+
 
 if __name__ == '__main__':
     unittest.main()
