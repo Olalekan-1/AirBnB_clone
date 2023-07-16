@@ -89,6 +89,7 @@ class HBNBCommand(cmd.Cmd):
                 if item[0].startswith("{}.".format(content[1]))])
         else:
             print("** class doesn't exist **")
+
     def do_update(self, line):
         """ Updates an instance based on  the class name and id
         """
@@ -102,14 +103,23 @@ class HBNBCommand(cmd.Cmd):
         elif "{}.{}".format(content[0],content[1]) not in storage.all():
             print("** no instanc found **")
         elif len(content) == 2:
-            print("**attribute name missing **"):
+            print("**attribute name missing **")
         elif len(content) == 3:
             print("** value missing **")
         else:
             key = content[2]
-            value = content[3]
+            value = content[3] # default type is string
             all_storage = storage.all()
-            all_storage["{}.{}".format(conten[0], content[1])][key] = value
+
+            for attr_type in (int, float):
+                try:
+                    value = attr_type(value)
+                    break
+                except (ValueError):
+                    pass
+
+            all_storage["{}.{}".format(content[0], content[1])].__setattr__(key, value)
+            storage.save()
 
     def emptyline(self):
         """ overide the default emptyline
