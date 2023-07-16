@@ -9,6 +9,7 @@ from models import storage
 
 class_names = ['BaseModel']
 
+
 class HBNBCommand(cmd.Cmd):
     """ The Cmd class - gives access to its atttributes;
     useful to create, design commmand line interpreter
@@ -19,7 +20,7 @@ class HBNBCommand(cmd.Cmd):
         """ Creates a new instance of BaseMode
         """
         content = line.split()
-        
+
         if not line:
             print("** class name is missing **")
         elif content[0] not in class_names:
@@ -29,7 +30,7 @@ class HBNBCommand(cmd.Cmd):
             storage.new(model)
             storage.save()
             print("{}".format(model.id))
-    
+
     def do_show(self, line):
         """ Prints the string representation of an instance
         """
@@ -85,7 +86,7 @@ class HBNBCommand(cmd.Cmd):
             print([str(item) for item in storage.all().values()])
         elif content[0] in class_names:
             print([
-                str(item[1]) for item in storage.items() 
+                str(item[1]) for item in storage.items()
                 if item[0].startswith("{}.".format(content[1]))])
         else:
             print("** class doesn't exist **")
@@ -100,7 +101,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         elif len(content) == 1:
             print("** instance id missing **")
-        elif "{}.{}".format(content[0],content[1]) not in storage.all():
+        elif "{}.{}".format(content[0], content[1]) not in storage.all():
             print("** no instanc found **")
         elif len(content) == 2:
             print("**attribute name missing **")
@@ -108,7 +109,7 @@ class HBNBCommand(cmd.Cmd):
             print("** value missing **")
         else:
             key = content[2]
-            value = content[3] # default type is string
+            value = content[3]  # default type is string
             all_storage = storage.all()
 
             for attr_type in (int, float):
@@ -118,7 +119,8 @@ class HBNBCommand(cmd.Cmd):
                 except (ValueError):
                     pass
 
-            all_storage["{}.{}".format(content[0], content[1])].__setattr__(key, value)
+            all_storage["{}.{}".format(
+                content[0], content[1])].__setattr__(key, value)
             storage.save()
 
     def emptyline(self):
@@ -134,8 +136,10 @@ class HBNBCommand(cmd.Cmd):
     def do_EOF(self, line):
         """EOF command exit the interpreter """
         return True
+
     def postloop(self):
         print()
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
