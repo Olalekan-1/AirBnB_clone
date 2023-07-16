@@ -78,6 +78,9 @@ class Testbase(unittest.TestCase):
         base = BaseModel(**b)
         self.assertTrue(self.base2, base)
         self.assertFalse(self.base2 is base)
+        self.assertIsInstance(b, dict)
+        with self.assertRaises(TypeError):
+            base.to_dict(5)
 
 
 if __name__ == '__main__':
