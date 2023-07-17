@@ -4,6 +4,7 @@
 interpreter
 """
 import cmd
+import re
 from models.base_model import BaseModel
 from models.user import User
 from models.amenity import Amenity
@@ -15,6 +16,7 @@ from models import storage
 
 class_names = ['BaseModel', 'User', 'Amenity', 'City',
                'Place', 'State', 'Review']
+options = ['all', 'count', 'show']
 
 
 class HBNBCommand(cmd.Cmd):
@@ -22,6 +24,43 @@ class HBNBCommand(cmd.Cmd):
     useful to create, design commmand line interpreter
     """
     prompt = "(hbnb) "
+
+    def _name_option(self, name="", option="", model_id=None):
+        """Helper function calling methods on an Object
+
+        example (cmd) User.all()
+        """
+        output = []
+        if option == 'all':
+            output = [
+                str(item[1]) for item
+                in storage.all().items() if name in item[0]]
+        elif option == 'count':
+            output = sum(
+                    1 for item in storage.all().items()
+                    if name in item[0])
+        print(output)
+
+    def default(self, line):
+        pattern = r"(?P<name>[A-Za-z]+).(?P<option>[a-z]+)\((?P<id>\".+\")?\)"
+        matched = re.match(pattern, line)
+        matched = None if not matched else matched.groupdict()
+        name = None if not matched else matched['name']
+        name = None if name not in class_names else name
+        option = None if not matched else matched['option']
+        option = None if option not in options else option
+        model_id = None
+
+        if matched is not None:
+            try:
+                model_id = matched['id']
+            except Exception:
+                pass
+
+        if name is not None and option is not None:
+            return self._name_option(name, option, model_id)
+        else:
+            print("*** Unknown syntax: {}".format(line))
 
     def do_create(self, line):
         """ Creates a new instance of BaseMode
