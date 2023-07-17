@@ -29,7 +29,7 @@ class HBNBCommand(cmd.Cmd):
         content = line.split()
 
         if not line:
-            print("** class name is missing **")
+            print("** class name missing **")
         elif content[0] not in class_names:
             print("** class doesn't exist **")
         else:
@@ -93,7 +93,7 @@ class HBNBCommand(cmd.Cmd):
             print([str(item) for item in storage.all().values()])
         elif content[0] in class_names:
             print([
-                str(item[1]) for item in storage.items()
+                str(item[1]) for item in storage.all().items()
                 if item[0].startswith("{}.".format(content[1]))])
         else:
             print("** class doesn't exist **")
@@ -103,15 +103,15 @@ class HBNBCommand(cmd.Cmd):
         """
         content = line.split()
         if not line:
-            print("** class name missiong **")
+            print("** class name missing **")
         elif content[0] not in class_names:
             print("** class doesn't exist **")
         elif len(content) == 1:
             print("** instance id missing **")
         elif "{}.{}".format(content[0], content[1]) not in storage.all():
-            print("** no instanc found **")
+            print("** no instance found **")
         elif len(content) == 2:
-            print("**attribute name missing **")
+            print("** attribute name missing **")
         elif len(content) == 3:
             print("** value missing **")
         else:
