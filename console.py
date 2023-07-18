@@ -5,6 +5,7 @@ interpreter
 """
 import cmd
 import re
+import json
 from models.base_model import BaseModel
 from models.user import User
 from models.amenity import Amenity
@@ -26,26 +27,29 @@ class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
 
     def _name_option(
-            self, name="", option="",
-            model_id=None, key=None, value=None):
+            self, name="", option="", model_id=None,
+            key=None, value=None, attrib_dict=None
+            ):
         """Helper function calling methods on an Object
 
         example (cmd) User.all()
         """
         output = []
+        all_items = storage.all()
+
         if option == 'all':
             output = [
                 str(item[1]) for item
-                in storage.all().items() if name in item[0]]
+                in all_items.items() if name in item[0]]
         elif option == 'count':
             output = sum(
-                    1 for item in storage.all().items()
+                    1 for item in all_items.items()
                     if name in item[0])
         elif option == 'show':
             if model_id is not None:
                 output = [
                         str(item[1]) for item in
-                        storage.all().items() if item[0] ==
+                        all_items.items() if item[0] ==
                         "{}.{}".format(name, model_id.replace('"', ""))
                         ]
                 if output:
@@ -58,7 +62,6 @@ class HBNBCommand(cmd.Cmd):
         elif option == 'destroy':
             output = "** no instance found **"
             if model_id is not None:
-                all_items = storage.all()
                 search_key = "{}.{}".format(name, model_id.replace('"', ""))
                 if search_key in all_items:
                     del all_items[search_key]
@@ -69,11 +72,27 @@ class HBNBCommand(cmd.Cmd):
                 output = "** instance id missing **"
 
         elif option == 'update':
+            if attrib_dict is not None:
+                search_key = "{}.{}".format(name, model_id.replace('"', ""))
+                if search_key in all_items:
+                    for key, value in attrib_dict.items():
+                        for my_type in (int, float):
+                            try:
+                                value = my_type(value)
+                                break
+                            except Exception:
+                                pass
+                        all_items[search_key].__setattr__(key, value)
+                    storage.save()
+                    return
+                else:
+                    print("** no instance found **")
+                    return
+
             if key is not None and value is not None and model_id is not None:
                 key = key.replace('"', "")
                 value = value.replace('"', "")
                 model_id = model_id.replace('"', "")
-                all_items = storage.all()
                 search_key = "{}.{}".format(name, model_id.replace('"', ""))
                 if search_key in all_items:
                     for my_type in (int, float):
@@ -103,6 +122,27 @@ class HBNBCommand(cmd.Cmd):
                 r"(?P<option>[a-z]+)\((?P<id>\".+?\")?" +
                 r"\,?\s?(?P<key>\".+?\")?\,?\s?(?P<value>\".+?\"|\d+?)?\)"
                 )
+        update_dict_pattern = (
+                r"(?P<name>[A-Za-z]+)." +
+                r"(?P<option>[a-z]+)\((?P<id>\".+?\")?" +
+                r"\,\s?(?P<attrib>\{.*?\})\)"
+                )
+        matched = re.match(update_dict_pattern, line)
+        if matched:
+            matched = matched.groupdict()
+            name = matched['name']
+            option = matched['option']
+            attrib_dict = matched['attrib']
+            model_id = matched['id']
+            try:
+                attrib_dict = json.loads(attrib_dict.replace("'", "\""))
+                return self._name_option(
+                        name, option, model_id,
+                        attrib_dict=attrib_dict)
+            except Exception as e:
+                print("*** Unknown syntax: {}".format(line))
+                return
+
         matched = re.match(pattern, line)
         matched = None if not matched else matched.groupdict()
         name = None if not matched else matched['name']
