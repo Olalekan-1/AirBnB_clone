@@ -177,14 +177,13 @@ class HBNBCommand(cmd.Cmd):
     def do_create(self, line):
         """ Creates a new instance of BaseMode
         """
-        content = line.split()
 
         if not line:
             print("** class name missing **")
-        elif content[0] not in class_names:
+        elif line not in class_names:
             print("** class doesn't exist **")
         else:
-            model = eval(content[0])()
+            model = eval(line)()
             storage.new(model)
             storage.save()
             print("{}".format(model.id))
@@ -239,13 +238,12 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, line):
         """ Prints all string representation of all instances
         """
-        content = line.split()
         if not line:
             print([str(item) for item in storage.all().values()])
-        elif content[0] in class_names:
+        elif line in class_names:
             print([
                 str(item[1]) for item in storage.all().items()
-                if item[0].startswith("{}.".format(content[1]))])
+                if item[0].startswith("{}.".format(line))])
         else:
             print("** class doesn't exist **")
 
